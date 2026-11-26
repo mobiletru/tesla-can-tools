@@ -58,6 +58,8 @@
   #define BOARD_NAME "M5Stack ATOM Matrix + ATOMIC CAN Base"
 #elif defined(BOARD_M5STACK_ATOM)
   #define BOARD_NAME "M5Stack ATOM Lite + ATOMIC CAN Base"
+#elif defined(BOARD_EVTV_DUE)
+  #define BOARD_NAME "EVTV ESP32-Due (CAN0)"
 #elif defined(BOARD_ESP32_GENERIC) && defined(CAN_DRIVER_MCP2515)
   #define BOARD_NAME "Generic ESP32 + MCP2515 module"
 #elif defined(BOARD_ESP32_GENERIC)

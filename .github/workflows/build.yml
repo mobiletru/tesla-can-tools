@@ -64,6 +64,7 @@ jobs:
           - m5stack-atom-matrix
           - m5stack-atom-swap-pins
           - esp32-mcp2515
+          - evtv-esp32-due
           - esp32-lilygo
           - lilygo-t2can
           - lilygo-t2can-fd

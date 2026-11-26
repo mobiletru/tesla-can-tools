@@ -107,7 +107,7 @@ static void live_draw(TeslaFSDApp* app) {
     widget_reset(app->widget);
     static const char* const titles[LIVE_PAGE_COUNT] = {
         "Motors A/Nm", "Wheel speed", "Axle RPM", "Oil pumps", "HV pack"};
-    char line[40], a[12], b[12];
+    char line[48], a[16], b[16];
     snprintf(line, sizeof(line), "%u/%u %s", (unsigned)(page + 1), (unsigned)LIVE_PAGE_COUNT, titles[page]);
     widget_add_string_element(app->widget, 0, 0, AlignLeft, AlignTop, FontPrimary, line);
     uint8_t row = 0;
