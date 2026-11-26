@@ -74,6 +74,23 @@
   <span class="name">Waveshare ESP32-S3-CAN <span class="chip">· ESP32-S3</span></span>
   <esp-web-install-button data-env="waveshare-s3-can" data-chip="ESP32-S3"></esp-web-install-button>
 </div>
+<div class="board">
+  <span class="name">EVTV ESP32-Due / CANDue V2 (CAN0 only) <span class="chip">· ESP32</span></span>
+  <esp-web-install-button data-env="evtv-esp32-due" data-chip="ESP32"></esp-web-install-button>
+</div>
+
+<h2 style="font-size:1.15rem;margin:28px 0 8px">Install from a file</h2>
+<p class="sub" style="margin:0 0 12px">For a board the release above doesn't have yet, or your own build: pick the
+<b>-merged.bin</b> for your board (from a release or a CI run's artifacts) and its chip, then press Install.
+The file stays on this computer.</p>
+<div class="board">
+  <label class="name" for="localbin">Firmware file</label>
+  <input type="file" id="localbin" accept=".bin" style="max-width:100%">
+  <label class="name" for="localchip">Chip</label>
+  <select id="localchip"><option value="ESP32">ESP32</option><option value="ESP32-S3">ESP32-S3</option></select>
+  <esp-web-install-button id="localbtn" disabled></esp-web-install-button>
+</div>
+<p id="localnote" class="sub" style="margin:0 0 20px">No file picked yet.</p>
 
 <p id="relnote" class="sub" style="margin:0 0 20px">Looking up the latest firmware release&hellip;</p>
 
@@ -110,7 +127,7 @@
     var have = {};
     rel.files.forEach(function (n) { have[n] = true; });
     var missing = 0;
-    document.querySelectorAll('esp-web-install-button').forEach(function (btn) {
+    document.querySelectorAll('esp-web-install-button[data-env]').forEach(function (btn) {
       var env = btn.getAttribute('data-env');
       var name = 'tesla-fsd-' + env + '-merged.bin';
       if (!have[name]) {
@@ -204,6 +221,39 @@
       note.appendChild(link);
       note.appendChild(document.createTextNode(' and flash it with esptool at offset 0.'));
     });
+})();
+</script>
+
+<script>
+// Local-file install: the picked file becomes a blob: URL and the manifest a
+// data: URL, so nothing is uploaded and no web host is needed. A -merged.bin is
+// a full-flash image, written at offset 0 like the release images above.
+(function () {
+  var file = document.getElementById('localbin');
+  var chip = document.getElementById('localchip');
+  var btn = document.getElementById('localbtn');
+  var note = document.getElementById('localnote');
+  var url = null;
+  function update() {
+    var f = file.files && file.files[0];
+    if (url) { URL.revokeObjectURL(url); url = null; }
+    if (!f) { btn.setAttribute('disabled', ''); btn.removeAttribute('manifest'); note.textContent = 'No file picked yet.'; return; }
+    url = URL.createObjectURL(f);
+    btn.setAttribute('manifest', 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
+      name: 'Tesla FSD (' + f.name + ')',
+      version: 'local',
+      new_install_prompt_erase: true,
+      builds: [{ chipFamily: chip.value, parts: [{ path: url, offset: 0 }] }]
+    })));
+    btn.removeAttribute('disabled');
+    note.textContent = '';
+    note.appendChild(document.createTextNode('Ready to install '));
+    var b = document.createElement('b'); b.textContent = f.name; note.appendChild(b);
+    note.appendChild(document.createTextNode(' (' + Math.round(f.size / 1024) + ' KB) on an ' + chip.value + '.' +
+      (/merged/i.test(f.name) ? '' : ' This file name has no "merged" in it: flashing an app-only image at offset 0 will not boot.')));
+  }
+  file.addEventListener('change', update);
+  chip.addEventListener('change', update);
 })();
 </script>
 
