@@ -85,7 +85,7 @@ static void test_oil(void) {
 
 static void test_pack_speed_gear(void) {
     FsdLive lv; memset(&lv, 0, sizeof(lv));
-    uint8_t b[8] = {0x10, 0x9C, 0x18, 0xFC, 0, 0, 0, 0};    // 400.00 V, -100.0 A
+    uint8_t b[8] = {0x40, 0x9C, 0x18, 0xFC, 0, 0, 0, 0};    // 400.00 V, -100.0 A
     CHECK(fsd_live_feed(&lv, 0x132, b, 8, 1));
     CHECK(lv.pack_cv == 40000);
     CHECK(lv.pack_da == -1000);
